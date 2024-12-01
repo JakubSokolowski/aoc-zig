@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Get all staged .zig files
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep "\.zig$")
+
+if [ -n "$FILES" ]; then
+    echo "Running zig fmt on staged files..."
+
+    # Run zig fmt on all staged .zig files
+    echo "$FILES" | while read file; do
+        if [ -f "$file" ]; then
+            zig fmt "$file"
+            # Stage the formatted file
+            git add "$file"
+        fi
+    done
+fi
+
+# If there were any errors, abort the commit
+if [ $? -ne 0 ]; then
+    echo "Zig format failed. Please fix the errors and try committing again."
+    exit 1
+fi
+
+exit 0
