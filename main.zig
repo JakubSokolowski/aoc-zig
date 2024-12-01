@@ -24,17 +24,18 @@ pub fn main() !void {
 }
 
 fn runSolution(allocator: std.mem.Allocator, year: u16, day: u8) !void {
-    // Pass the allocator down
-    const dayInput = try input.readDayInput(allocator, year, day);
-    defer allocator.free(dayInput);
-
     const solutions = sol.getSolutions();
 
     if (solutions.get(year, day)) |solution| {
+        const dayInput = try input.readDayInput(allocator, year, day);
+        defer allocator.free(dayInput);
+
         std.debug.print("\nRunning Year {} Day {} solutions:\n", .{ year, day });
         const first_result = solution.run_first(allocator, dayInput);
+        defer allocator.free(first_result);
         std.debug.print("Part 1:\n{s}\n", .{first_result}); //
         const second_result = solution.run_second(allocator, dayInput);
+        defer allocator.free(second_result);
         std.debug.print("Part 2:\n{s}\n", .{second_result});
     } else {
         std.debug.print("Solution not found for Year {} Day {}\n", .{ year, day });

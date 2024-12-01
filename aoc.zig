@@ -8,8 +8,10 @@ pub fn parse_args(args: [][]u8) ArgsError!AocArgs {
         2 => return ArgsError.MissingDay,
         else => {
             const year = args[1];
+
             const parsed_year = std.fmt.parseInt(u16, year, 10) catch |err| {
                 std.debug.print("Failed to parse year: {}\n", .{err});
+
                 return ArgsError.InvalidYear;
             };
 
